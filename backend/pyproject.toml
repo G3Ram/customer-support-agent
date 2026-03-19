@@ -1,0 +1,12 @@
+[project]
+dependencies = [
+    "anthropic>=0.40.0",      # Anthropic SDK — Python first-class
+    "fastapi>=0.115.0",        # Async API framework
+    "uvicorn[standard]",       # ASGI server
+    "mcp>=1.0.0",              # MCP Python SDK (from Anthropic/modelcontextprotocol)
+    "pydantic>=2.0",           # Data validation — use for all tool inputs/outputs
+    "python-ulid",             # For idempotency keys (sortable UUIDs)
+    "httpx",                   # Async HTTP for backend stubs
+    "pytest",
+    "pytest-asyncio",
+]
