@@ -1,0 +1,36 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd $CLAUDE_PROJECT_DIR && python -m pyright backend/ --outputjson 2>/dev/null | python -c \"import json,sys; d=json.load(sys.stdin); e=d.get('generalDiagnostics',[]); [print(f'TYPE ERROR: {x[\\\"file\\\"]}:{x[\\\"range\\\"][\\\"start\\\"][\\\"line\\\"]} {x[\\\"message\\\"]}') for x in e if x['severity']=='error']; sys.exit(1 if any(x['severity']=='error' for x in e) else 0)\" 2>/dev/null || echo 'Type check failed — review before continuing'"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo \"$TOOL_INPUT\" | python -c \"import json,sys; cmd=json.load(sys.stdin).get('command',''); dangerous=['rm -rf','drop table','delete from','truncate']; found=[d for d in dangerous if d in cmd.lower()]; print(f'BLOCKED dangerous command: {found}') if found else None; sys.exit(2 if found else 0)\""
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd $CLAUDE_PROJECT_DIR && echo '---' && echo 'Session ending. Run /context-dump to update CLAUDE.md status before closing.'"
+          }
+        ]
+      }
+    ]
+  }
+}
