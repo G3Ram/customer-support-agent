@@ -122,7 +122,7 @@ ruff format backend/
 
 ## Current implementation status
 <!-- Update this after every session -->
-- [ ] backend/types/models.py
+- [x] backend/types/models.py
 - [ ] backend/mcp/middleware/prerequisites.py
 - [ ] backend/mcp/middleware/idempotency.py
 - [ ] backend/mcp/tools/ (all 4 tools)

@@ -1,0 +1,7 @@
+agent
+api
+backends
+mcp
+prompts
+tests
+types
