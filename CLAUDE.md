@@ -123,8 +123,8 @@ ruff format backend/
 ## Current implementation status
 <!-- Update this after every session -->
 - [x] backend/types/models.py
-- [ ] backend/mcp/middleware/prerequisites.py
-- [ ] backend/mcp/middleware/idempotency.py
+- [x] backend/mcp/middleware/prerequisites.py
+- [x] backend/mcp/middleware/idempotency.py
 - [ ] backend/mcp/tools/ (all 4 tools)
 - [ ] backend/mcp/server.py
 - [ ] backend/prompts/system_prompt.py
@@ -132,7 +132,7 @@ ruff format backend/
 - [ ] backend/backends/ (all 4 stubs)
 - [ ] backend/agent/orchestrator.py
 - [ ] backend/api/ (FastAPI routes + SSE)
-- [ ] backend/tests/unit/ (prerequisites, idempotency)
+- [x] backend/tests/unit/ (prerequisites, idempotency)
 - [ ] backend/tests/integration/ (3 canonical scenarios)
 
 ## Working in this codebase
