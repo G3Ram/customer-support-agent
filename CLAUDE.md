@@ -122,18 +122,22 @@ ruff format backend/
 
 ## Current implementation status
 <!-- Update this after every session -->
-- [x] backend/types/models.py
-- [x] backend/mcp/middleware/prerequisites.py
-- [x] backend/mcp/middleware/idempotency.py
-- [ ] backend/mcp/tools/ (all 4 tools)
-- [ ] backend/mcp/server.py
-- [ ] backend/prompts/system_prompt.py
-- [ ] backend/prompts/few_shot_examples.py
-- [ ] backend/backends/ (all 4 stubs)
-- [ ] backend/agent/orchestrator.py
-- [ ] backend/api/ (FastAPI routes + SSE)
-- [x] backend/tests/unit/ (prerequisites, idempotency)
-- [ ] backend/tests/integration/ (3 canonical scenarios)
+- [x] backend/types/models.py — COMPLETE, all enums and Pydantic models defined
+- [x] backend/mcp/middleware/prerequisites.py — COMPLETE, 21/21 unit tests passing
+- [x] backend/mcp/middleware/idempotency.py — COMPLETE, 21/21 unit tests passing
+- [ ] backend/mcp/tools/ (all 4 tools) — FILES EXIST, BUT EMPTY (only 1 line each)
+- [ ] backend/mcp/server.py — FILE EXISTS, BUT EMPTY (only 1 line)
+- [ ] backend/prompts/system_prompt.py — FILE EXISTS, BUT EMPTY (only 1 line)
+- [ ] backend/prompts/few_shot_examples.py — FILE EXISTS, BUT EMPTY (only 1 line)
+- [ ] backend/backends/ (all 4 stubs) — FILES EXIST, BUT EMPTY (only 1 line each)
+- [ ] backend/agent/orchestrator.py — FILE EXISTS, BUT EMPTY (only 1 line)
+- [ ] backend/agent/session.py — FILE EXISTS, BUT EMPTY (only 1 line)
+- [ ] backend/agent/classifier.py — FILE EXISTS, BUT EMPTY (only 1 line)
+- [ ] backend/api/main.py — FILE EXISTS, BUT EMPTY (only 1 line)
+- [ ] backend/api/schemas.py — FILE EXISTS, BUT EMPTY (only 1 line)
+- [x] backend/tests/unit/ (prerequisites, idempotency) — 21/21 tests passing
+- [ ] backend/tests/integration/ (3 canonical scenarios) — FILES EXIST, BUT EMPTY
+- [ ] backend/tests/evals/ (FCR benchmarks) — FILES EXIST, BUT EMPTY
 
 ## Working in this codebase
 
