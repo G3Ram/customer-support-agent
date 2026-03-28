@@ -121,23 +121,24 @@ ruff format backend/
 ```
 
 ## Current implementation status
-<!-- Update this after every session -->
-- [x] backend/types/models.py — COMPLETE, all enums and Pydantic models defined
-- [x] backend/mcp/middleware/prerequisites.py — COMPLETE, 21/21 unit tests passing
-- [x] backend/mcp/middleware/idempotency.py — COMPLETE, 21/21 unit tests passing
-- [ ] backend/mcp/tools/ (all 4 tools) — FILES EXIST, BUT EMPTY (only 1 line each)
-- [ ] backend/mcp/server.py — FILE EXISTS, BUT EMPTY (only 1 line)
-- [ ] backend/prompts/system_prompt.py — FILE EXISTS, BUT EMPTY (only 1 line)
-- [ ] backend/prompts/few_shot_examples.py — FILE EXISTS, BUT EMPTY (only 1 line)
-- [ ] backend/backends/ (all 4 stubs) — FILES EXIST, BUT EMPTY (only 1 line each)
-- [ ] backend/agent/orchestrator.py — FILE EXISTS, BUT EMPTY (only 1 line)
-- [ ] backend/agent/session.py — FILE EXISTS, BUT EMPTY (only 1 line)
-- [ ] backend/agent/classifier.py — FILE EXISTS, BUT EMPTY (only 1 line)
-- [ ] backend/api/main.py — FILE EXISTS, BUT EMPTY (only 1 line)
-- [ ] backend/api/schemas.py — FILE EXISTS, BUT EMPTY (only 1 line)
-- [x] backend/tests/unit/ (prerequisites, idempotency) — 21/21 tests passing
-- [ ] backend/tests/integration/ (3 canonical scenarios) — FILES EXIST, BUT EMPTY
-- [ ] backend/tests/evals/ (FCR benchmarks) — FILES EXIST, BUT EMPTY
+<!-- Updated: 2026-03-29 -->
+- [x] backend/types/models.py — COMPLETE (271 lines), all enums and Pydantic models defined
+- [x] backend/mcp/middleware/prerequisites.py — COMPLETE (88 lines), 14/14 unit tests passing
+- [x] backend/mcp/middleware/idempotency.py — COMPLETE (40 lines), 7/7 unit tests passing
+- [x] backend/backends/ (all 4 stubs) — COMPLETE (crm:51, orders:66, payments:66, tickets:56), verified with fixtures
+- [ ] backend/mcp/tools/ (all 4 tools) — NOT STARTED (0 lines each), need middleware integration
+- [ ] backend/mcp/server.py — NOT STARTED (0 lines)
+- [ ] backend/prompts/system_prompt.py — NOT STARTED (0 lines)
+- [ ] backend/prompts/few_shot_examples.py — NOT STARTED (0 lines)
+- [ ] backend/agent/orchestrator.py — NOT STARTED (0 lines), not wired to prerequisites yet
+- [ ] backend/agent/session.py — NOT STARTED (0 lines)
+- [ ] backend/agent/classifier.py — NOT STARTED (0 lines)
+- [ ] backend/api/main.py — NOT STARTED (0 lines)
+- [ ] backend/api/schemas.py — NOT STARTED (0 lines)
+- [x] backend/tests/unit/ — COMPLETE, 21/21 tests passing (prerequisites:14, idempotency:7)
+- [ ] backend/tests/unit/test_error_handlers.py — NOT STARTED (0 lines)
+- [ ] backend/tests/integration/ (3 canonical scenarios) — NOT STARTED (0 lines each)
+- [ ] backend/tests/evals/ (FCR benchmarks) — NOT STARTED (0 lines)
 
 ## Working in this codebase
 
