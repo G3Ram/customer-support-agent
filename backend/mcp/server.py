@@ -10,7 +10,7 @@ All tools share a single MCP instance and use session-based state tracking
 to enforce prerequisites and idempotency.
 """
 
-from mcp.server.fastmcp import FastMCP
+from mcp.server import FastMCP  # pyright: ignore[reportMissingImports]
 
 # Create the MCP instance that all tools will register with
 mcp = FastMCP("customer-support-agent")
