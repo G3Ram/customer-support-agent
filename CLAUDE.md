@@ -126,8 +126,8 @@ ruff format backend/
 - [x] backend/mcp/middleware/prerequisites.py — COMPLETE (88 lines), 14/14 unit tests passing
 - [x] backend/mcp/middleware/idempotency.py — COMPLETE (40 lines), 7/7 unit tests passing
 - [x] backend/backends/ (all 4 stubs) — COMPLETE (crm:51, orders:66, payments:66, tickets:56), verified with fixtures
-- [ ] backend/mcp/tools/ (all 4 tools) — NOT STARTED (0 lines each), need middleware integration
-- [ ] backend/mcp/server.py — NOT STARTED (0 lines)
+- [x] backend/mcp/tools/ (all 4 tools) — COMPLETE (get_customer:103, lookup_order:91, process_refund:130, escalate_to_human:98), all tools use middleware correctly
+- [x] backend/mcp/server.py — COMPLETE (36 lines), FastMCP instance created, all 4 tools registered and verified
 - [ ] backend/prompts/system_prompt.py — NOT STARTED (0 lines)
 - [ ] backend/prompts/few_shot_examples.py — NOT STARTED (0 lines)
 - [ ] backend/agent/orchestrator.py — NOT STARTED (0 lines), not wired to prerequisites yet
