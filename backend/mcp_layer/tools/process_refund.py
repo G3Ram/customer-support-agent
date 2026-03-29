@@ -12,14 +12,14 @@ On DUPLICATE: Return the existing refund information, do not retry.
 """
 
 from backend.backends.payments import process_refund as process_refund_backend
-from backend.mcp.middleware.idempotency import get_or_create_idempotency_key
-from backend.mcp.middleware.prerequisites import (
+from backend.mcp_layer.middleware.idempotency import get_or_create_idempotency_key
+from backend.mcp_layer.middleware.prerequisites import (
     PrerequisiteError,
     check_prerequisites,
     update_session_state,
 )
-from backend.mcp.server import mcp
-from backend.mcp.session_storage import get_session, update_session
+from backend.mcp_layer.mcp_server import mcp
+from backend.mcp_layer.session_storage import get_session, update_session
 from backend.types.models import ErrorCode, RefundReason, ToolName
 
 

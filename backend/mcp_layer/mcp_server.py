@@ -17,7 +17,7 @@ mcp = FastMCP("customer-support-agent")
 
 # Import tools to register them with the MCP server
 # These imports must come after mcp creation to avoid circular imports
-from backend.mcp.tools import (  # noqa: E402
+from backend.mcp_layer.tools import (  # noqa: E402
     escalate_to_human,
     get_customer,
     lookup_order,

@@ -11,13 +11,13 @@ On NOT_FOUND: Ask customer to confirm email, do not proceed with other tools.
 """
 
 from backend.backends.crm import get_customer as get_customer_backend
-from backend.mcp.middleware.prerequisites import (
+from backend.mcp_layer.middleware.prerequisites import (
     PrerequisiteError,
     check_prerequisites,
     update_session_state,
 )
-from backend.mcp.server import mcp
-from backend.mcp.session_storage import get_session, update_session
+from backend.mcp_layer.mcp_server import mcp
+from backend.mcp_layer.session_storage import get_session, update_session
 from backend.types.models import ErrorCode, ToolName
 
 # Email to customer_id mapping based on CRM fixtures

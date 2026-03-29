@@ -7,10 +7,10 @@ This package contains 4 tools that work together to handle customer support requ
 4. escalate_to_human - Create escalation ticket (requires customer_id)
 """
 
-from backend.mcp.tools.escalate_to_human import escalate_to_human
-from backend.mcp.tools.get_customer import get_customer
-from backend.mcp.tools.lookup_order import lookup_order
-from backend.mcp.tools.process_refund import process_refund
+from backend.mcp_layer.tools.escalate_to_human import escalate_to_human
+from backend.mcp_layer.tools.get_customer import get_customer
+from backend.mcp_layer.tools.lookup_order import lookup_order
+from backend.mcp_layer.tools.process_refund import process_refund
 
 __all__ = [
     "get_customer",

@@ -12,7 +12,7 @@ import uuid
 
 import pytest
 
-from backend.mcp.middleware.idempotency import get_or_create_idempotency_key
+from backend.mcp_layer.middleware.idempotency import get_or_create_idempotency_key
 from backend.types.models import SessionState
 
 

@@ -11,13 +11,13 @@ On OWNERSHIP_MISMATCH: Escalate P1 immediately - NEVER retry, this is a critical
 """
 
 from backend.backends.orders import lookup_order as lookup_order_backend
-from backend.mcp.middleware.prerequisites import (
+from backend.mcp_layer.middleware.prerequisites import (
     PrerequisiteError,
     check_prerequisites,
     update_session_state,
 )
-from backend.mcp.server import mcp
-from backend.mcp.session_storage import get_session, update_session
+from backend.mcp_layer.mcp_server import mcp
+from backend.mcp_layer.session_storage import get_session, update_session
 from backend.types.models import ErrorCode, ToolName
 
 

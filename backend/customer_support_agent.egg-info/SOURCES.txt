@@ -13,7 +13,10 @@ customer_support_agent.egg-info/SOURCES.txt
 customer_support_agent.egg-info/dependency_links.txt
 customer_support_agent.egg-info/requires.txt
 customer_support_agent.egg-info/top_level.txt
-mcp/server.py
+mcp/__init__.py
+mcp/mcp_server.py
+mcp/session_storage.py
 prompts/few_shot_examples.py
 prompts/system_prompt.py
+tests/__init__.py
 types/models.py

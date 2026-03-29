@@ -36,7 +36,9 @@ Target: ≥80% first-contact resolution (FCR).
 3. `process_refund`     — WRITE, irreversible, requires refund_eligible=True from step 2
 4. `escalate_to_human`  — ESCALATE, available any time
 
-MCP tools are defined in `backend/mcp/tools/` and exposed via `backend/mcp/server.py`. The MCP server runs as part of the agent orchestrator, not as a separate process.
+MCP tools are defined in `backend/mcp_layer/tools/` and exposed via `backend/mcp_layer/mcp_server.py`. The MCP server runs as part of the agent orchestrator, not as a separate process.
+
+**Note:** The directory is named `mcp_layer` (not `mcp`) to avoid shadowing the external `mcp` package from PyPI.
 
 ## Agent & prompts architecture
 - `backend/agent/orchestrator.py` — Main agent loop, manages Claude API calls with MCP tool integration
@@ -128,13 +130,14 @@ ruff format backend/
 - [x] backend/backends/ (all 4 stubs) — COMPLETE (crm:51, orders:66, payments:66, tickets:56), verified with fixtures
 - [x] backend/mcp/tools/ (all 4 tools) — COMPLETE (get_customer:102, lookup_order:90, process_refund:129, escalate_to_human:97), all tools use middleware correctly
 - [x] backend/mcp/server.py — COMPLETE (35 lines), FastMCP instance created, all 4 tools registered and verified, import path fixed
-- [x] backend/prompts/system_prompt.py — COMPLETE (134 lines), 6 sections with env var interpolation, verified
+- [x] backend/prompts/system_prompt.py — COMPLETE (143 lines), 6 sections with env var interpolation, refund reason inference rules added
 - [x] backend/prompts/few_shot_examples.py — COMPLETE (40 lines), 3 examples covering auto-resolve and escalation patterns
-- [x] backend/agent/orchestrator.py — COMPLETE (287 lines), fully wired to prerequisites/idempotency/session_storage, tool schema generation verified
+- [x] backend/agent/orchestrator.py — COMPLETE (299 lines), FastMCP TextContent parsing fixed, tool results now correctly parsed as JSON dicts
 - [ ] backend/agent/session.py — NOT STARTED (0 lines)
 - [ ] backend/agent/classifier.py — NOT STARTED (0 lines)
-- [ ] backend/api/main.py — NOT STARTED (0 lines)
-- [ ] backend/api/schemas.py — NOT STARTED (0 lines)
+- [x] backend/api/main.py — COMPLETE (33 lines), FastAPI app with CORS, routes registered, .env loading added
+- [x] backend/api/schemas.py — COMPLETE (45 lines), Pydantic v2 models for request/response
+- [x] backend/api/routes/chat.py — COMPLETE (117 lines), POST /api/chat, GET /api/chat/stream, GET /api/health
 - [x] backend/tests/unit/ — COMPLETE, 21/21 tests passing (prerequisites:14, idempotency:7)
 - [ ] backend/tests/unit/test_error_handlers.py — NOT STARTED (0 lines)
 - [ ] backend/tests/integration/ (3 canonical scenarios) — NOT STARTED (0 lines each)

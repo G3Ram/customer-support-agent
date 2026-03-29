@@ -9,7 +9,7 @@ Tests verify that tool ordering violations are caught at the code level:
 
 import pytest
 
-from backend.mcp.middleware.prerequisites import (
+from backend.mcp_layer.middleware.prerequisites import (
     PrerequisiteError,
     check_prerequisites,
     update_session_state,

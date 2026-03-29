@@ -13,14 +13,14 @@ from typing import Any
 
 import anthropic
 
-from backend.mcp.middleware.idempotency import get_or_create_idempotency_key
-from backend.mcp.middleware.prerequisites import (
+from backend.mcp_layer.middleware.idempotency import get_or_create_idempotency_key
+from backend.mcp_layer.middleware.prerequisites import (
     PrerequisiteError,
     check_prerequisites,
     update_session_state,
 )
-from backend.mcp.server import mcp
-from backend.mcp.session_storage import get_session, update_session
+from backend.mcp_layer.mcp_server import mcp
+from backend.mcp_layer.session_storage import get_session, update_session
 from backend.prompts.system_prompt import build_system_prompt
 from backend.types.models import ToolName
 
@@ -237,8 +237,8 @@ class Orchestrator:
     async def _call_mcp_tool(self, tool_name: str, tool_input: dict) -> dict:
         """Call a FastMCP tool using the mcp.call_tool() method.
 
-        Based on the diagnostic, FastMCP exposes a call_tool() method that
-        takes the tool name and input parameters.
+        FastMCP returns results as a list of TextContent objects with .text
+        attributes containing JSON strings. This method parses them correctly.
 
         Args:
             tool_name: Name of the tool to call
@@ -247,24 +247,36 @@ class Orchestrator:
         Returns:
             Tool result as a dict
         """
-        # Use FastMCP's call_tool method
+        import json
+
         result = await mcp.call_tool(tool_name, tool_input)
 
-        # FastMCP returns a list of TextContent or ImageContent blocks
-        # For our tools, we expect text content containing JSON-like dict
-        if hasattr(result, "content") and len(result.content) > 0:
-            # Extract text from the first content block
-            content = result.content[0]
-            if hasattr(content, "text"):
-                # The text should already be the dict returned by our tool
-                return eval(content.text) if isinstance(content.text, str) else content.text
+        # Handle FastMCP TextContent response format
+        if isinstance(result, list):
+            if len(result) == 0:
+                return {}
+            item = result[0]
+            # TextContent object with .text attribute containing JSON string
+            if hasattr(item, "text"):
+                try:
+                    return json.loads(item.text)
+                except json.JSONDecodeError:
+                    return {"raw_response": item.text}
+            # Already a dict
+            if isinstance(item, dict):
+                return item
+            return {"raw_response": str(item)}
 
-        # If result is already a dict, return it directly
         if isinstance(result, dict):
             return result
 
-        # Fallback: try to extract content as dict
-        return {"error": "unexpected_response_format", "message": str(result)}
+        if isinstance(result, str):
+            try:
+                return json.loads(result)
+            except json.JSONDecodeError:
+                return {"raw_response": result}
+
+        return {"raw_response": str(result)}
 
     async def _get_tools_schema(self) -> list[dict]:
         """Build Anthropic-compatible tool schema from FastMCP.
