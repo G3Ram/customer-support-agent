@@ -75,7 +75,32 @@ AgentEvent = TextEvent | ToolCallEvent | ToolResultEvent | ErrorEvent
 
 
 class Orchestrator:
-    """Main agent orchestrator that manages conversation state and tool calls."""
+    """Main agent orchestrator that manages conversation state and tool calls.
+
+    NOTE: This implementation uses the raw Anthropic SDK pending availability of the
+    Python Agent SDK. The Agent SDK will provide native MCP integration where tools
+    are automatically discovered from connected MCP servers, eliminating manual
+    schema building and tool routing.
+
+    When the Python Agent SDK is available, this class can be replaced with:
+        agent = Agent(
+            model="claude-sonnet-4-20250514",
+            system_prompt=build_system_prompt(),
+            mcp_servers=[{
+                "type": "stdio",
+                "command": "python",
+                "args": ["-m", "backend.mcp_layer.mcp_server"]
+            }]
+        )
+        async for event in agent.run(user_message):
+            yield event
+
+    The Agent SDK will handle:
+    - Tool discovery from MCP server automatically
+    - Tool execution and result feeding back to Claude
+    - Retry logic and context management
+    - Session state (our prerequisites middleware hooks in via MCP)
+    """
 
     def __init__(self, session_id: str):
         """Initialize the orchestrator with a session.
@@ -96,13 +121,7 @@ class Orchestrator:
     async def run(self, user_message: str) -> AsyncIterator[AgentEvent]:
         """Execute an agent turn with the given user message.
 
-        This method:
-        1. Adds the user message to conversation history
-        2. Calls Claude API with tool schema
-        3. Processes response blocks (text and tool calls)
-        4. Handles tool execution with prerequisite and idempotency checks
-        5. Continues the loop if tools were used
-        6. Yields events as they occur
+        This method delegates to _agent_loop() which implements the agentic loop pattern.
 
         Args:
             user_message: User's message to process
@@ -111,7 +130,22 @@ class Orchestrator:
             AgentEvent instances (TextEvent, ToolCallEvent, ToolResultEvent, ErrorEvent)
         """
         self.history.append({"role": "user", "content": user_message})
+        async for event in self._agent_loop():
+            yield event
 
+    async def _agent_loop(self) -> AsyncIterator[AgentEvent]:
+        """Core agentic loop that calls Claude, processes tool use, and continues until done.
+
+        This method:
+        1. Calls Claude API with tool schema
+        2. Processes response blocks (text and tool calls)
+        3. Handles tool execution with prerequisite and idempotency checks
+        4. Continues the loop if tools were used
+        5. Yields events as they occur
+
+        Yields:
+            AgentEvent instances (TextEvent, ToolCallEvent, ToolResultEvent, ErrorEvent)
+        """
         while True:
             tools = await self._get_tools_schema()
 
@@ -239,6 +273,22 @@ class Orchestrator:
 
         FastMCP returns results as a list of TextContent objects with .text
         attributes containing JSON strings. This method parses them correctly.
+
+        TODO: When Python Agent SDK is available, this manual tool routing will be
+        replaced by native MCP connection. The Agent SDK will:
+        - Automatically discover tools from the connected MCP server
+        - Route tool calls directly to the MCP server
+        - Handle result parsing and feeding back to Claude
+        - Manage the agentic loop with built-in retry logic
+
+        The equivalent Agent SDK code will look like:
+            agent = Agent(
+                model=self.model,
+                system_prompt=self.system_prompt,
+                mcp_servers=[{"type": "stdio", "command": "python",
+                             "args": ["-m", "backend.mcp_layer.mcp_server"]}]
+            )
+            # Tool calls happen automatically inside agent.run()
 
         Args:
             tool_name: Name of the tool to call

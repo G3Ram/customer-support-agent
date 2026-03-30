@@ -11,11 +11,11 @@ from fastapi.responses import StreamingResponse
 
 from backend.agent.orchestrator import (
     ErrorEvent,
-    Orchestrator,
     TextEvent,
     ToolCallEvent,
     ToolResultEvent,
 )
+from backend.agent.session import get_or_create_agent_session
 from backend.api.schemas import ChatRequest, ChatResponse, EventSchema, HealthResponse
 from backend.mcp_layer.mcp_server import mcp
 
@@ -56,7 +56,7 @@ def agent_event_to_schema(event) -> EventSchema:
 async def chat(request: ChatRequest) -> ChatResponse:
     """Synchronous chat endpoint for testing.
 
-    Collects all events from the orchestrator and returns them in a single response.
+    Collects all events from the agent session and returns them in a single response.
     Useful for testing but not ideal for production (no streaming feedback).
 
     Args:
@@ -65,10 +65,10 @@ async def chat(request: ChatRequest) -> ChatResponse:
     Returns:
         ChatResponse with all events collected from the conversation
     """
-    orchestrator = Orchestrator(session_id=request.session_id)
+    session = get_or_create_agent_session(request.session_id)
     events = []
 
-    async for event in orchestrator.run(request.message):
+    async for event in session.process_turn(request.message):
         events.append(agent_event_to_schema(event))
 
     return ChatResponse(session_id=request.session_id, events=events)
@@ -90,10 +90,10 @@ async def chat_stream(session_id: str, message: str):
     """
 
     async def event_generator():
-        """Generate SSE-formatted events from the orchestrator."""
-        orchestrator = Orchestrator(session_id=session_id)
+        """Generate SSE-formatted events from the agent session."""
+        session = get_or_create_agent_session(session_id)
 
-        async for event in orchestrator.run(message):
+        async for event in session.process_turn(message):
             event_schema = agent_event_to_schema(event)
             yield f"data: {event_schema.model_dump_json()}\n\n"
 
