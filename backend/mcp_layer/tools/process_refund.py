@@ -11,6 +11,8 @@ On LIMIT_EXCEEDED: Escalate P2 - amount exceeds the $150 refund limit.
 On DUPLICATE: Return the existing refund information, do not retry.
 """
 
+from pydantic import ValidationError
+
 from backend.backends.payments import process_refund as process_refund_backend
 from backend.mcp_layer.middleware.idempotency import get_or_create_idempotency_key
 from backend.mcp_layer.middleware.prerequisites import (
@@ -20,7 +22,7 @@ from backend.mcp_layer.middleware.prerequisites import (
 )
 from backend.mcp_layer.mcp_server import mcp
 from backend.mcp_layer.session_storage import get_session, update_session
-from backend.types.models import ErrorCode, RefundReason, ToolName
+from backend.types.models import ErrorCode, ProcessRefundInput, RefundReason, ToolName
 
 
 @mcp.tool()
@@ -49,8 +51,37 @@ async def process_refund(
         Dict containing refund details (refund_id, status, amount, processed_at)
         or error information if processing fails
     """
+    # Validate inputs through Pydantic model
+    try:
+        # Note: ProcessRefundInput expects idempotency_key, which we'll generate later
+        # For now, validate the other fields
+        validated = ProcessRefundInput(
+            order_id=order_id,
+            customer_id=customer_id,
+            amount=amount,
+            reason=RefundReason(reason),
+            idempotency_key="placeholder",  # Will be replaced with real key
+        )
+    except ValidationError as e:
+        return {
+            "error": "invalid_input",
+            "message": f"Invalid input: {str(e.errors()[0]['msg'])}",
+        }
+    except ValueError:
+        return {
+            "error": "invalid_reason",
+            "message": f"Invalid refund reason. Must be one of: {', '.join([r.value for r in RefundReason])}",
+        }
+
     # Get or create session
     session = get_session(session_id)
+
+    # SECURITY: Validate customer_id matches session (prevent cross-account access)
+    if session.customer_id and customer_id != session.customer_id:
+        return {
+            "error": "unauthorized",
+            "message": "Unable to process this request. Please verify your account information.",
+        }
 
     # Check prerequisites FIRST
     try:
@@ -58,22 +89,13 @@ async def process_refund(
     except PrerequisiteError as e:
         return {"error": "prerequisite_failed", "message": str(e)}
 
-    # Validate reason enum
-    try:
-        refund_reason = RefundReason(reason)
-    except ValueError:
-        return {
-            "error": "invalid_reason",
-            "message": f"Invalid refund reason. Must be one of: {', '.join([r.value for r in RefundReason])}",
-        }
-
     # Get or create idempotency key for this order
     idempotency_key, updated_session = get_or_create_idempotency_key(order_id, session)
     update_session(session_id, updated_session)
 
     # Call backend
     result = await process_refund_backend(
-        order_id, customer_id, refund_reason, idempotency_key
+        order_id, customer_id, validated.reason, idempotency_key
     )
 
     # Handle ErrorCode returns

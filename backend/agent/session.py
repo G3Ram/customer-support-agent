@@ -47,7 +47,7 @@ class AgentSession:
         This method:
         1. Increments the turn counter
         2. Delegates to the orchestrator's run() method
-        3. Tracks whether escalation occurred during this turn
+        3. Tracks whether escalation or resolution occurred during this turn
         4. Yields all events from the orchestrator
 
         Args:
@@ -62,6 +62,17 @@ class AgentSession:
             # Track escalation
             if hasattr(event, "tool_name") and event.tool_name == "escalate_to_human":
                 self.is_escalated = True
+
+            # Track successful refund (marks session as resolved)
+            if (
+                hasattr(event, "result")
+                and isinstance(event.result, dict)
+                and "refund_id" in event.result
+                and event.result.get("status") == "processed"
+                and not event.is_error
+            ):
+                self.is_resolved = True
+
             yield event
 
     @property

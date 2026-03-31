@@ -10,6 +10,8 @@ REQUIRES: Verified customer_id from get_customer must be in session first.
 On OWNERSHIP_MISMATCH: Escalate P1 immediately - NEVER retry, this is a critical security issue.
 """
 
+from pydantic import ValidationError
+
 from backend.backends.orders import lookup_order as lookup_order_backend
 from backend.mcp_layer.middleware.prerequisites import (
     PrerequisiteError,
@@ -18,7 +20,7 @@ from backend.mcp_layer.middleware.prerequisites import (
 )
 from backend.mcp_layer.mcp_server import mcp
 from backend.mcp_layer.session_storage import get_session, update_session
-from backend.types.models import ErrorCode, ToolName
+from backend.types.models import ErrorCode, LookupOrderInput, ToolName
 
 
 @mcp.tool()
@@ -38,8 +40,27 @@ async def lookup_order(session_id: str, order_id: str, customer_id: str) -> dict
         Dict containing order details (order_id, customer_id, amount, order_date, status,
         refund_eligible, refund_reason) or error information if lookup fails
     """
+    # Validate inputs through Pydantic model
+    try:
+        validated = LookupOrderInput(
+            order_id=order_id,
+            customer_id=customer_id,
+        )
+    except ValidationError as e:
+        return {
+            "error": "invalid_input",
+            "message": f"Invalid input: {str(e.errors()[0]['msg'])}",
+        }
+
     # Get or create session
     session = get_session(session_id)
+
+    # SECURITY: Validate customer_id matches session (prevent cross-account access)
+    if session.customer_id and customer_id != session.customer_id:
+        return {
+            "error": "unauthorized",
+            "message": "Unable to access this order. Please verify your account information.",
+        }
 
     # Check prerequisites FIRST
     try:

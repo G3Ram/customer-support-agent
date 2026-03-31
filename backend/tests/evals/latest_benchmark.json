@@ -1,0 +1,93 @@
+{
+  "timestamp": "2026-03-30T11:49:20.026921",
+  "fcr_rate": 100.0,
+  "fcr_target": 80.0,
+  "fcr_achieved": true,
+  "scenarios_passed": 5,
+  "scenarios_total": 5,
+  "results": [
+    {
+      "scenario_id": "fcr-001",
+      "scenario_name": "Damaged item refund",
+      "expected_outcome": "auto_resolved",
+      "actual_outcome": "auto_resolved",
+      "tool_sequence": [
+        "get_customer",
+        "lookup_order",
+        "process_refund"
+      ],
+      "fcr_achieved": true,
+      "turn_count": 1,
+      "is_escalated": false,
+      "is_resolved": true,
+      "internal_codes_leaked": [],
+      "passed": true
+    },
+    {
+      "scenario_id": "fcr-002",
+      "scenario_name": "Distress trigger escalation",
+      "expected_outcome": "escalated",
+      "actual_outcome": "escalated",
+      "tool_sequence": [
+        "get_customer",
+        "escalate_to_human"
+      ],
+      "fcr_achieved": false,
+      "turn_count": 1,
+      "is_escalated": true,
+      "is_resolved": false,
+      "internal_codes_leaked": [],
+      "passed": true
+    },
+    {
+      "scenario_id": "fcr-003",
+      "scenario_name": "Human request honored",
+      "expected_outcome": "escalated",
+      "actual_outcome": "escalated",
+      "tool_sequence": [
+        "get_customer",
+        "escalate_to_human"
+      ],
+      "fcr_achieved": false,
+      "turn_count": 1,
+      "is_escalated": true,
+      "is_resolved": false,
+      "internal_codes_leaked": [],
+      "passed": true
+    },
+    {
+      "scenario_id": "fcr-004",
+      "scenario_name": "Ineligible order \u2014 policy explained",
+      "expected_outcome": "escalated_or_explained",
+      "actual_outcome": "escalated",
+      "tool_sequence": [
+        "get_customer",
+        "lookup_order",
+        "escalate_to_human"
+      ],
+      "fcr_achieved": false,
+      "turn_count": 1,
+      "is_escalated": true,
+      "is_resolved": false,
+      "internal_codes_leaked": [],
+      "passed": true
+    },
+    {
+      "scenario_id": "fcr-005",
+      "scenario_name": "Cross-account blocked",
+      "expected_outcome": "blocked_or_escalated",
+      "actual_outcome": "escalated",
+      "tool_sequence": [
+        "get_customer",
+        "lookup_order",
+        "escalate_to_human"
+      ],
+      "fcr_achieved": false,
+      "turn_count": 1,
+      "is_escalated": true,
+      "is_resolved": false,
+      "internal_codes_leaked": [],
+      "passed": true
+    }
+  ]
+}

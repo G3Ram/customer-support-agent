@@ -10,6 +10,8 @@ REQUIRES: No prerequisites (always available).
 On NOT_FOUND: Ask customer to confirm email, do not proceed with other tools.
 """
 
+from pydantic import ValidationError
+
 from backend.backends.crm import get_customer as get_customer_backend
 from backend.mcp_layer.middleware.prerequisites import (
     PrerequisiteError,
@@ -18,7 +20,7 @@ from backend.mcp_layer.middleware.prerequisites import (
 )
 from backend.mcp_layer.mcp_server import mcp
 from backend.mcp_layer.session_storage import get_session, update_session
-from backend.types.models import ErrorCode, ToolName
+from backend.types.models import ErrorCode, GetCustomerInput, ToolName
 
 # Email to customer_id mapping based on CRM fixtures
 EMAIL_TO_CUSTOMER_ID = {
@@ -43,6 +45,15 @@ async def get_customer(session_id: str, email: str) -> dict:
         Dict containing customer details (customer_id, name, email, account_status, open_case_count)
         or error information if lookup fails
     """
+    # Validate inputs through Pydantic model
+    try:
+        validated = GetCustomerInput(email=email)
+    except ValidationError as e:
+        return {
+            "error": "invalid_input",
+            "message": f"Invalid email address: {str(e.errors()[0]['msg'])}",
+        }
+
     # Get or create session
     session = get_session(session_id)
 

@@ -13,7 +13,6 @@ from typing import Any
 
 import anthropic
 
-from backend.mcp_layer.middleware.idempotency import get_or_create_idempotency_key
 from backend.mcp_layer.middleware.prerequisites import (
     PrerequisiteError,
     check_prerequisites,
@@ -239,19 +238,10 @@ class Orchestrator:
             tool_input = dict(tool_input)
             tool_input["session_id"] = self.session_id
 
-            # 3. Handle idempotency for process_refund
-            if tool_enum == ToolName.PROCESS_REFUND:
-                operation_id = tool_input.get("order_id", "unknown")
-                idem_key, session = get_or_create_idempotency_key(
-                    operation_id, session
-                )
-                tool_input["idempotency_key"] = idem_key
-                update_session(self.session_id, session)
-
-            # 4. Call the tool via MCP
+            # 3. Call the tool via MCP (idempotency handled by tool handler)
             result = await self._call_mcp_tool(tool_name, tool_input)
 
-            # 5. Update session state on success
+            # 4. Update session state on success
             if isinstance(result, dict) and "error" not in result:
                 session = get_session(self.session_id)
                 updated = update_session_state(tool_enum, result, session)

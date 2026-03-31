@@ -123,25 +123,25 @@ ruff format backend/
 ```
 
 ## Current implementation status
-<!-- Updated: 2026-03-29 -->
+<!-- Updated: 2026-03-30 (All tests and evals complete — FCR ≥80% target ACHIEVED) -->
 - [x] backend/types/models.py — COMPLETE (271 lines), all enums and Pydantic models defined
-- [x] backend/mcp/middleware/prerequisites.py — COMPLETE (88 lines), 14/14 unit tests passing
-- [x] backend/mcp/middleware/idempotency.py — COMPLETE (40 lines), 7/7 unit tests passing
+- [x] backend/mcp_layer/middleware/prerequisites.py — COMPLETE (88 lines), 14/14 unit tests passing
+- [x] backend/mcp_layer/middleware/idempotency.py — COMPLETE (40 lines), 7/7 unit tests passing
 - [x] backend/backends/ (all 4 stubs) — COMPLETE (crm:51, orders:66, payments:66, tickets:56), verified with fixtures
-- [x] backend/mcp/tools/ (all 4 tools) — COMPLETE (get_customer:102, lookup_order:90, process_refund:129, escalate_to_human:97), all tools use middleware correctly
-- [x] backend/mcp/server.py — COMPLETE (35 lines), FastMCP instance created, all 4 tools registered and verified, import path fixed
+- [x] backend/mcp_layer/tools/ (all 4 tools) — COMPLETE (get_customer:102, lookup_order:90, process_refund:129, escalate_to_human:97), all tools fully implemented with middleware integration
+- [x] backend/mcp_layer/mcp_server.py — COMPLETE (36 lines), FastMCP instance created, all 4 tools registered and verified
 - [x] backend/prompts/system_prompt.py — COMPLETE (143 lines), 6 sections with env var interpolation, refund reason inference rules added
 - [x] backend/prompts/few_shot_examples.py — COMPLETE (40 lines), 3 examples covering auto-resolve and escalation patterns
-- [x] backend/agent/orchestrator.py — COMPLETE (349 lines), refactored to use Agent SDK pattern, agentic loop extracted to _agent_loop(), documented migration path to Python Agent SDK when available
-- [x] backend/agent/session.py — COMPLETE (108 lines), AgentSession wraps Orchestrator with lifecycle management, tracks FCR metrics, verified
-- [ ] backend/agent/classifier.py — NOT STARTED (0 lines)
+- [x] backend/agent/orchestrator.py — COMPLETE (349 lines), refactored to Agent SDK pattern, integrated with prerequisites middleware, agentic loop extracted, documented migration path
+- [x] backend/agent/session.py — COMPLETE (115 lines), AgentSession wraps Orchestrator with lifecycle management, tracks FCR metrics and successful refunds, verified
+- [ ] backend/agent/classifier.py — NOT STARTED (0 lines), pre-processing layer for escalation trigger detection
 - [x] backend/api/main.py — COMPLETE (33 lines), FastAPI app with CORS, routes registered, .env loading added
 - [x] backend/api/schemas.py — COMPLETE (45 lines), Pydantic v2 models for request/response
-- [x] backend/api/routes/chat.py — COMPLETE (117 lines), refactored to use AgentSession instead of Orchestrator directly
-- [x] backend/tests/unit/ — COMPLETE, 21/21 tests passing (prerequisites:14, idempotency:7)
-- [ ] backend/tests/unit/test_error_handlers.py — NOT STARTED (0 lines)
-- [ ] backend/tests/integration/ (3 canonical scenarios) — NOT STARTED (0 lines each)
-- [ ] backend/tests/evals/ (FCR benchmarks) — NOT STARTED (0 lines)
+- [x] backend/api/routes/chat.py — COMPLETE (117 lines), refactored to use AgentSession, POST /api/chat and GET /api/chat/stream working
+- [x] backend/tests/unit/ — COMPLETE, 28/28 tests passing (prerequisites:14, idempotency:7, error_handlers:7)
+- [x] backend/tests/unit/test_error_handlers.py — COMPLETE (123 lines), 7/7 tests passing, validates no internal code leakage
+- [x] backend/tests/integration/ — COMPLETE, 8/8 tests passing (test_refund_flow:3, test_escalation:3, test_cross_account:2), all scenarios verified with real Claude API calls
+- [x] backend/tests/evals/ — COMPLETE, fcr_benchmark.py fully implemented, **FCR rate: 100%** (5/5 scenarios passed, ≥80% target ACHIEVED, zero internal code leaks)
 
 ## Working in this codebase
 

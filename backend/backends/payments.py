@@ -30,9 +30,9 @@ async def process_refund(
     Returns:
         ProcessRefundOutput with refund details, or ErrorCode if processing fails
     """
-    # Check for duplicate idempotency key
+    # Check for duplicate idempotency key - return cached result for true idempotency
     if idempotency_key in _processed_keys:
-        return ErrorCode.DUPLICATE
+        return _processed_keys[idempotency_key]
 
     # Map order IDs to refund amounts (based on order fixtures)
     order_amounts = {
