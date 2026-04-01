@@ -122,6 +122,8 @@ dmypy.json
 # IDE settings
 .vscode/
 .idea/
+.claude/settings.local.json
+.claude/memory/
 *.swp
 *.swo
 *~
