@@ -475,8 +475,8 @@ MIT License - See LICENSE file for details.
 ## Contact
 
 For questions about this implementation or the Claude Architect Certification:
-- Repository: [github.com/yourusername/customer-support-agent](https://github.com/yourusername/customer-support-agent)
-- Issues: [github.com/yourusername/customer-support-agent/issues](https://github.com/yourusername/customer-support-agent/issues)
+- Repository: [github.com/g3ram/customer-support-agent](https://github.com/g3ram/customer-support-agent)
+- Issues: [github.com/g3ram/customer-support-agent/issues](https://github.com/g3ram/customer-support-agent/issues)
 
 ---
 
